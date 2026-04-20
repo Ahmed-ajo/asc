@@ -1,0 +1,197 @@
+// stage0_test.lang
+
+print("stage0:begin");
+
+// literals
+print(123);
+print(123.5);
+print("hello");
+print(true);
+print(false);
+print(nil);
+
+// arithmetic and precedence
+print(1 + 2);
+print(10 - 3);
+print(4 * 5);
+print(20 / 4);
+print(2 + 3 * 4);
+print((2 + 3) * 4);
+print(7 - 2 - 1);
+print(-5);
+print(-(2 * 3));
+
+// comparisons and equality
+print(1 < 2);
+print(2 < 1);
+print(1 <= 1);
+print(2 <= 1);
+print(3 > 2);
+print(2 > 3);
+print(3 >= 3);
+print(2 >= 3);
+print(1 == 1);
+print(1 == 2);
+print(1 != 2);
+print(1 != 1);
+print("a" == "a");
+print("a" == "b");
+print(nil == nil);
+print(nil != nil);
+print(true == true);
+print(true == false);
+
+// logical operators
+print(true and true);
+print(true and false);
+print(false and true);
+print(false and false);
+print(true or true);
+print(true or false);
+print(false or true);
+print(false or false);
+print(!true);
+print(!false);
+
+// variables and assignment
+var a = 10;
+var b = 20;
+print(a);
+print(b);
+a = a + 5;
+b = b - 7;
+print(a);
+print(b);
+
+var c = a * b;
+print(c);
+
+// blocks and shadowing
+var x = "global";
+print(x);
+
+{
+    var x = "block";
+    print(x);
+
+    {
+        var x = "inner";
+        print(x);
+    }
+
+    print(x);
+}
+
+print(x);
+
+// if / else
+if (true) {
+    print("if-true");
+}
+
+if (false) {
+    print("bad");
+} else {
+    print("if-false-else");
+}
+
+if (1 < 2) {
+    print("compare-true");
+} else {
+    print("bad");
+}
+
+// while
+var i = 0;
+while (i < 5) {
+    print(i);
+    i = i + 1;
+}
+
+// functions
+fun add(a, b) {
+    return a + b;
+}
+
+fun sub(a, b) {
+    return a - b;
+}
+
+fun nop() {
+    print("nop-body");
+}
+
+print(add(3, 4));
+print(sub(10, 6));
+nop();
+
+// early return
+fun abs(x) {
+    if (x < 0) {
+        return -x;
+    }
+    return x;
+}
+
+print(abs(-9));
+print(abs(7));
+
+// recursion
+fun fact(n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * fact(n - 1);
+}
+
+print(fact(1));
+print(fact(5));
+
+// closures / lexical scoping
+fun makeCounter(start) {
+    var value = start;
+
+    fun inc() {
+        value = value + 1;
+        return value;
+    }
+
+    return inc;
+}
+
+var c1 = makeCounter(10);
+var c2 = makeCounter(100);
+
+print(c1());
+print(c1());
+print(c2());
+print(c1());
+print(c2());
+
+// closure capturing outer variable
+var outer = "outside";
+
+fun showOuter() {
+    print(outer);
+}
+
+showOuter();
+
+{
+    var outer = "inside";
+    print(outer);
+    showOuter();
+}
+
+// nested functions
+fun outerFun(x) {
+    fun innerFun(y) {
+        return x + y;
+    }
+
+    return innerFun(5);
+}
+
+print(outerFun(10));
+
+print("stage0:end");

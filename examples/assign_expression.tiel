@@ -1,0 +1,17 @@
+fun test(myParam) {
+    myParam = 2;
+    print(myParam);
+}
+
+var myVar1 = 2;
+var myVar2 = 3;
+
+print(myVar1 = myVar2 = 5);
+print(myVar1);
+print(myVar2);
+
+myVar1 = 2 * myVar1 + 4;
+print(myVar1);
+
+test(myVar1);
+print(myVar1);

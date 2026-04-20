@@ -1,0 +1,143 @@
+print("inheritance:begin");
+
+class Character {
+
+    Character(name, stats) {
+        this.name = name;
+        this.stats = stats;
+    }
+
+    describe() {
+        print("Character");
+        print(this.name);
+        print(this.stats[0]);
+        print(this.stats[1]);
+    }
+
+    act() {
+        print("base-act");
+        print(this.name);
+    }
+
+    setHp(x) {
+        this.stats[0] = x;
+    }
+
+    printHp() {
+        print(this.name);
+        print(this.stats[0]);
+    }
+}
+
+class Warrior extends Character {
+
+    Warrior(name, stats, weapon) {
+        this.name = name;
+        this.stats = stats;
+        this.weapon = weapon;
+    }
+
+    describe() {
+        super.describe();
+        print("Warrior");
+        print(this.weapon);
+    }
+
+    act() {
+        super.act();
+        print("slash");
+        print(this.weapon);
+    }
+}
+
+class Mage extends Character {
+
+    Mage(name, stats, spells) {
+        this.name = name;
+        this.stats = stats;
+        this.spells = spells;
+    }
+
+    describe() {
+        super.describe();
+        print("Mage");
+        print(this.spells[0]);
+        print(this.spells[1]);
+    }
+
+    act() {
+        print("cast");
+        print(this.name);
+        print(this.spells[0]);
+    }
+
+    upgradeFirstSpell(newName) {
+        this.spells[0] = newName;
+    }
+}
+
+class Archmage extends Mage {
+
+    Archmage(name, stats, spells, title) {
+        this.name = name;
+        this.stats = stats;
+        this.spells = spells;
+        this.title = title;
+    }
+
+    describe() {
+        super.describe();
+        print("Archmage");
+        print(this.title);
+    }
+
+    act() {
+        super.act();
+        print("ultimate");
+        print(this.title);
+    }
+}
+
+var c = Character("Nina", [100, 7]);
+var w = Warrior("Rolf", [150, 12], "axe");
+var m = Mage("Edda", [80, 20], ["spark", "shield"]);
+var a = Archmage("Luna", [120, 30], ["meteor", "barrier"], "Grand Master");
+
+c.describe();
+w.describe();
+m.describe();
+a.describe();
+
+c.act();
+w.act();
+m.act();
+a.act();
+
+w.setHp(151);
+m.setHp(81);
+a.setHp(121);
+
+w.printHp();
+m.printHp();
+a.printHp();
+
+m.upgradeFirstSpell("lightning");
+a.upgradeFirstSpell("sunfire");
+
+m.describe();
+a.describe();
+
+var party = [c, w, m, a];
+
+party[0].act();
+party[1].act();
+party[2].act();
+party[3].act();
+
+party[1].setHp(200);
+party[3].setHp(300);
+
+party[1].printHp();
+party[3].printHp();
+
+print("inheritance:end");

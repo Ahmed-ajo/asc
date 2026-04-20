@@ -1,0 +1,116 @@
+print("classes:begin");
+
+class Counter {
+
+    Counter(name, start) {
+        this.name = name;
+        this.value = start;
+        this.history = [start];
+    }
+
+    inc() {
+        this.value = this.value + 1;
+        this.history[0] = this.value;
+    }
+
+    addTwice(x) {
+        this.value = this.value + x;
+        this.value = this.value + x;
+        this.history[0] = this.value;
+    }
+
+    rename(newName) {
+        this.name = newName;
+    }
+
+    printState() {
+        print(this.name);
+        print(this.value);
+        print(this.history[0]);
+    }
+}
+
+var a = Counter("A", 10);
+var b = Counter("B", 3);
+
+a.printState();
+b.printState();
+
+a.inc();
+a.printState();
+
+b.addTwice(4);
+b.printState();
+
+a.rename("A1");
+a.printState();
+
+var counters = [a, b];
+counters[0].inc();
+counters[1].inc();
+
+counters[0].printState();
+counters[1].printState();
+
+class Box {
+
+    Box(label, values) {
+        this.label = label;
+        this.values = values;
+    }
+
+    setFirst(x) {
+        this.values[0] = x;
+    }
+
+    setDeep(x) {
+        this.values[2][1] = x;
+    }
+
+    printBox() {
+        print(this.label);
+        print(this.values[0]);
+        print(this.values[1]);
+        print(this.values[2][0]);
+        print(this.values[2][1]);
+    }
+}
+
+var box = Box("numbers", [11, 22, [33, 44]]);
+box.printBox();
+
+box.setFirst(111);
+box.setDeep(444);
+box.printBox();
+
+var boxes = [box, Box("other", [1, 2, [3, 4]])];
+boxes[1].printBox();
+boxes[1].setFirst(10);
+boxes[1].setDeep(40);
+boxes[1].printBox();
+
+class Pair {
+
+    Pair(left, right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    swap() {
+        var temp = this.left;
+        this.left = this.right;
+        this.right = temp;
+    }
+
+    printPair() {
+        print(this.left);
+        print(this.right);
+    }
+}
+
+var p = Pair("left", "right");
+p.printPair();
+p.swap();
+p.printPair();
+
+print("classes:end");

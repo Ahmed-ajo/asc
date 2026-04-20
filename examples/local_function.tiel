@@ -1,0 +1,14 @@
+fun apply(f, arg) {
+    return f(arg);
+}
+
+fun add(a) {
+    fun add_curried(b) {
+        return a + b;
+    }
+
+    return add_curried;
+}
+
+var x = add(1)(2);
+print(x);
