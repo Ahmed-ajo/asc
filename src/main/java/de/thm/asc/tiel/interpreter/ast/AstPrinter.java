@@ -19,9 +19,11 @@ public class AstPrinter {
     public String print(Expr expr) {
         return switch (expr) {
             case AssignExpr assignExpr -> sExpr(AssignExpr.class.getSimpleName(), assignExpr.target, assignExpr.value);
+            case ArrayExpr arrayExpr -> sExpr(ArrayExpr.class.getSimpleName(), arrayExpr.elements);
             case BinaryExpr binaryExpr ->
                     sExpr(BinaryExpr.class.getSimpleName(), binaryExpr.operator.toString(), binaryExpr.left, binaryExpr.right);
             case CallExpr callExpr -> sExpr(CallExpr.class.getSimpleName(), callExpr.callee, callExpr.arguments);
+            case IndexExpr indexExpr -> sExpr(IndexExpr.class.getSimpleName(), indexExpr.target, indexExpr.index);
             case LiteralExpr literalExpr -> {
                 if (literalExpr.value == null) yield sExpr(LiteralExpr.class.getSimpleName(), "nil");
                 yield sExpr(LiteralExpr.class.getSimpleName(), literalExpr.value.toString());

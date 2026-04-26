@@ -114,6 +114,49 @@ public class ScannerTest {
         ));
     }
 
+    @Test
+    void scansArrayLiteralTokens() {
+        var tokens = new Scanner("""
+                var values = [1, 2, 3];
+                """).scan();
+
+        assertTokenTypes(tokens, List.of(
+                TokenType.VAR,
+                TokenType.IDENTIFIER,
+                TokenType.EQUAL,
+                TokenType.LEFT_BRACKET,
+                TokenType.NUMBER,
+                TokenType.COMMA,
+                TokenType.NUMBER,
+                TokenType.COMMA,
+                TokenType.NUMBER,
+                TokenType.RIGHT_BRACKET,
+                TokenType.SEMICOLON,
+                TokenType.EOF
+        ));
+    }
+
+    @Test
+    void scansArrayIndexAndAssignmentTokens() {
+        var tokens = new Scanner("""
+                values[1] = values[0];
+                """).scan();
+
+        assertTokenTypes(tokens, List.of(
+                TokenType.IDENTIFIER,
+                TokenType.LEFT_BRACKET,
+                TokenType.NUMBER,
+                TokenType.RIGHT_BRACKET,
+                TokenType.EQUAL,
+                TokenType.IDENTIFIER,
+                TokenType.LEFT_BRACKET,
+                TokenType.NUMBER,
+                TokenType.RIGHT_BRACKET,
+                TokenType.SEMICOLON,
+                TokenType.EOF
+        ));
+    }
+
     private static void assertTokenTypes(List<Token> tokens, List<TokenType> expectedTypes) {
         assertEquals(expectedTypes.size(), tokens.size());
 

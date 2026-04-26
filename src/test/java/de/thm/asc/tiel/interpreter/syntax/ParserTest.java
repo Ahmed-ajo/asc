@@ -1,8 +1,10 @@
 package de.thm.asc.tiel.interpreter.syntax;
 
 import de.thm.asc.tiel.interpreter.ast.expr.AssignExpr;
+import de.thm.asc.tiel.interpreter.ast.expr.ArrayExpr;
 import de.thm.asc.tiel.interpreter.ast.expr.BinaryExpr;
 import de.thm.asc.tiel.interpreter.ast.expr.CallExpr;
+import de.thm.asc.tiel.interpreter.ast.expr.IndexExpr;
 import de.thm.asc.tiel.interpreter.ast.expr.LiteralExpr;
 import de.thm.asc.tiel.interpreter.ast.expr.LogicalExpr;
 import de.thm.asc.tiel.interpreter.ast.expr.UnaryExpr;
@@ -105,6 +107,51 @@ public class ParserTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void parsesArrayLiteralDeclaration() {
+        var actual = parse("""
+                var values = [1, true, "x"];
+                """);
+
+        var expected = List.of(
+                new VarDeclStmt(
+                        "values",
+                        new ArrayExpr(List.of(
+                                number(1),
+                                bool(true),
+                                string("x")
+                        ))
+                )
+        );
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void parsesArrayIndexAccessAndAssignment() {
+        var actual = parse("""
+                data[1] = data[0];
+                print(data[1]);
+                """);
+
+        var expected = List.of(
+                new ExpressionStmt(
+                        new AssignExpr(
+                                new IndexExpr(variable("data"), number(1)),
+                                new IndexExpr(variable("data"), number(0))
+                        )
+                ),
+                new ExpressionStmt(
+                        new CallExpr(
+                                variable("print"),
+                                List.of(new IndexExpr(variable("data"), number(1)))
+                        )
+                )
+        );
+
+        assertEquals(expected, actual);
+    }
+
     private static List<Stmt> parse(String source) {
         return new Parser(new Scanner(source).scan()).parse();
     }
@@ -119,5 +166,9 @@ public class ParserTest {
 
     private static LiteralExpr bool(boolean value) {
         return new LiteralExpr(new TiELValue.TBoolean(value));
+    }
+
+    private static LiteralExpr string(String value) {
+        return new LiteralExpr(new TiELValue.TString(value));
     }
 }
