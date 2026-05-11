@@ -228,6 +228,9 @@ public class Parser {
             if (expr instanceof VariableExpr) {
                 return new AssignExpr(expr, value).withPosition(expr.getPosition());
             }
+            if (expr instanceof IndexExpr) {
+                return new AssignExpr(expr, value).withPosition(expr.getPosition());
+            }
 
             throw new ParsingError("Expected variable expression left of =", equals.position());
         }
@@ -404,6 +407,10 @@ public class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if (match(LEFT_BRACKET)) {
+                var index = expression();
+                consume(RIGHT_BRACKET, "Expected ']' after index expression");
+                expr = new IndexExpr(expr, index).withPosition(expr.getPosition());
             }  else {
                 break;
             }
@@ -435,6 +442,17 @@ public class Parser {
         if (match(IDENTIFIER)) {
             return new VariableExpr((String) previous().value())
                     .withPosition(previous().position());
+        }
+        if (match(LEFT_BRACKET)) {
+            var position = previous().position();
+            var elements = new ArrayList<Expr>();
+            if (!check(RIGHT_BRACKET)) {
+                do {
+                    elements.add(expression());
+                } while (match(COMMA));
+            }
+            consume(RIGHT_BRACKET, "Expected ']' after array literal");
+            return new ArrayExpr(elements).withPosition(position);
         }
 
         if (match(LEFT_PAREN)) {

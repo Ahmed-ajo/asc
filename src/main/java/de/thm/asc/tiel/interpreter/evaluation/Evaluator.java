@@ -87,6 +87,12 @@ public class Evaluator {
                     } else {
                         globals.assign(v.name, value, assignExpr.getPosition());
                     }
+                } else if (assignExpr.target instanceof IndexExpr indexExpr) {
+                    var array = evaluateArrayTarget(indexExpr.target, assignExpr.getPosition());
+                    var index = evaluateArrayIndex(indexExpr.index, assignExpr.getPosition());
+                    checkArrayBounds(index, array, assignExpr.getPosition());
+
+                    array.value().set(index, value);
                 } else {
                     throw new IllegalStateException("Unexpected assignment target type");
                 }
@@ -156,6 +162,21 @@ public class Evaluator {
                 }
 
                 yield function.call(this, arguments, callExpr.getPosition());
+            }
+            case ArrayExpr arrayExpr -> {
+                var elements = new ArrayList<TiELValue>();
+                for (var element : arrayExpr.elements) {
+                    elements.add(evaluate(element));
+                }
+
+                yield new TiELValue.TArray(elements);
+            }
+            case IndexExpr indexExpr -> {
+                var array = evaluateArrayTarget(indexExpr.target, indexExpr.getPosition());
+                var index = evaluateArrayIndex(indexExpr.index, indexExpr.getPosition());
+                checkArrayBounds(index, array, indexExpr.getPosition());
+
+                yield array.value().get(index);
             }
             case LiteralExpr literalExpr -> literalExpr.value;
             case LogicalExpr logicalExpr -> {
@@ -250,6 +271,34 @@ public class Evaluator {
     private void checkNumberOperands(BinaryExpr.Operator operator, TiELValue left, TiELValue right, Token.Position errorPosition) {
         if (left instanceof TiELValue.TNumber && right instanceof TiELValue.TNumber) return;
         throw new RuntimeError(String.format("Operands to '%s' must be numbers.", operator.toString()), errorPosition);
+    }
+    private TiELValue.TArray evaluateArrayTarget(Expr targetExpr, Token.Position errorPosition) {
+        var target = evaluate(targetExpr);
+        if (target instanceof TiELValue.TArray array) {
+            return array;
+        }
+        throw new RuntimeError("Index target must be an array.", errorPosition);
+    }
+
+    private int evaluateArrayIndex(Expr indexExpr, Token.Position errorPosition) {
+        var indexValue = evaluate(indexExpr);
+        if (!(indexValue instanceof TiELValue.TNumber(var rawIndex))) {
+            throw new RuntimeError("Array index must be a number.", errorPosition);
+        }
+
+        if (rawIndex != Math.floor(rawIndex)) {
+            throw new RuntimeError("Array index must be an integer.", errorPosition);
+        }
+
+        var asInt = (int) rawIndex;
+        return asInt;
+    }
+
+    private void checkArrayBounds(int index, TiELValue.TArray array, Token.Position errorPosition) {
+        if (index >= 0 && index < array.value().size()) {
+            return;
+        }
+        throw new RuntimeError("Array index out of bounds.", errorPosition);
     }
 
     /**

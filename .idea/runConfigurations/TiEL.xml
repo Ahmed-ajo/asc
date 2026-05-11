@@ -1,8 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TiEL" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="25" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.thm.asc.tiel.interpreter.Main" />
     <module name="tiel-lang.main" />
-    <option name="PROGRAM_PARAMETERS" value="examples/hello_world.tiel" />
+    <option name="PROGRAM_PARAMETERS" value="stage_01_arrays.tiel" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/test/resources/integration_tests" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="de.thm.asc.tiel.interpreter.*" />

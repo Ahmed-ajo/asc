@@ -56,7 +56,7 @@ public class Binder {
         this.evaluator = evaluator;
 
         var predefinedGlobals = evaluator.globals.values.keySet().stream()
-                .collect(Collectors.toMap(name -> name, _ -> true));
+                .collect(Collectors.toMap(name -> name, ignored -> true));
 
         scopes.push(predefinedGlobals);
     }
@@ -287,7 +287,26 @@ public class Binder {
             resolve(a);
         }
     }
+    /**
+     * Resolves all array literal elements.
+     *
+     * @param expr Array literal expression.
+     */
+    private void resolveArrayExpr(ArrayExpr expr) {
+        for (var element : expr.elements) {
+            resolve(element);
+        }
+    }
 
+    /**
+     * Resolves index expression target and index.
+     *
+     * @param expr Index expression.
+     */
+    private void resolveIndexExpr(IndexExpr expr) {
+        resolve(expr.target);
+        resolve(expr.index);
+    }
     /**
      * Resolves a function or method call expression.
      *
@@ -330,11 +349,15 @@ public class Binder {
             case AssignExpr assignExpr -> resolveAssignExpr(assignExpr);
             case BinaryExpr binaryExpr -> resolveBinaryExpr(binaryExpr);
             case CallExpr callExpr -> resolveCallExpr(callExpr);
-            case LiteralExpr _ -> {
+            case LiteralExpr ignored -> {
             }
             case LogicalExpr logicalExpr -> resolveLogicalExpr(logicalExpr);
             case UnaryExpr unaryExpr -> resolveUnaryExpr(unaryExpr);
             case VariableExpr variableExpr -> resolveVariableExpr(variableExpr);
+            case ArrayExpr arrayExpr -> { resolveArrayExpr(arrayExpr);
+            }
+            case IndexExpr indexExpr -> { resolveIndexExpr(indexExpr);
+            }
         }
     }
 }
