@@ -289,6 +289,27 @@ public class Binder {
     }
 
     /**
+     * Resolves all array literal elements.
+     *
+     * @param expr Array literal expression.
+     */
+    private void resolveArrayExpr(ArrayExpr expr) {
+        for (var element : expr.elements) {
+            resolve(element);
+        }
+    }
+
+    /**
+     * Resolves index expression target and index.
+     *
+     * @param expr Index expression.
+     */
+    private void resolveIndexExpr(IndexExpr expr) {
+        resolve(expr.target);
+        resolve(expr.index);
+    }
+
+    /**
      * Resolves a function or method call expression.
      *
      * @param expr Call expression.
@@ -328,8 +349,10 @@ public class Binder {
     private void resolve(Expr expr) {
         switch (expr) {
             case AssignExpr assignExpr -> resolveAssignExpr(assignExpr);
+            case ArrayExpr arrayExpr -> resolveArrayExpr(arrayExpr);
             case BinaryExpr binaryExpr -> resolveBinaryExpr(binaryExpr);
             case CallExpr callExpr -> resolveCallExpr(callExpr);
+            case IndexExpr indexExpr -> resolveIndexExpr(indexExpr);
             case LiteralExpr _ -> {
             }
             case LogicalExpr logicalExpr -> resolveLogicalExpr(logicalExpr);
